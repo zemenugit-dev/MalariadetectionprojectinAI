@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register User | Malaria AI System</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/register.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+<div class="register-container">
+
+    <!-- LEFT SECTION -->
+    <div class="left-section">
+        <div class="overlay"></div>
+        <div class="content">
+            <h1>Malaria Detection AI</h1>
+            <p>Hospital Management & AI Diagnosis System</p>
+        </div>
+    </div>
+
+    <!-- RIGHT SECTION -->
+    <div class="right-section">
+
+        <div class="form-box">
+
+            <h2>Create New User</h2>
+            <p class="subtitle">Only administrators can register users</p>
+
+            <!-- FLASH MESSAGES -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert {{ category }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <!-- REGISTER FORM (FIXED) -->
+            <form action="/register" method="POST" onsubmit="return validateRegisterForm()">
+
+                <div class="input-group">
+                    <label>Full Name</label>
+                    <input type="text" name="fullname" >
+                </div>
+
+                <div class="input-group">
+                    <label>Email</label>
+                    <input type="email" name="email" >
+                </div>
+
+                <div class="input-group">
+                    <label>Password</label>
+                    <input type="password" name="password" >
+                </div>
+
+                <div class="input-group">
+                    <label>Confirm Password</label>
+                    <input type="password" name="confirm_password" >
+                </div>
+
+                <div class="input-group">
+                    <label>Role</label>
+                    <select name="role" required>
+                        <option value="">Select Role</option>
+                        <option value="admin">admin</option>
+                        <option value="doctor">doctor</option>
+                        <option value="patient">patient</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="register-btn">
+                    Register User
+                </button>
+
+            </form>
+
+            <div class="bottom-text">
+                Already have an account?
+                <a href="/login">Login Here</a>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- JS VALIDATION -->
+<script src="{{ url_for('static', filename='js/register.js') }}"></script>
+
+</body>
+</html>

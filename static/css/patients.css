@@ -1,0 +1,315 @@
+/* =========================================
+   GLOBAL
+========================================= */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+
+    font-family:'Poppins', sans-serif;
+
+    min-height:100vh;
+
+    background:
+    linear-gradient(
+        135deg,
+        #0f172a,
+        #0d6efd,
+        #06b6d4
+    );
+
+    padding:25px;
+
+    color:white;
+
+    overflow-x:auto;
+}
+
+/* =========================================
+   PAGE TITLE
+========================================= */
+
+h2{
+
+    text-align:center;
+
+    font-size:30px;
+
+    font-weight:700;
+
+    margin-bottom:22px;
+
+    color:white;
+
+    letter-spacing:1px;
+
+    text-shadow:
+    0 3px 12px rgba(0,0,0,0.3);
+}
+
+/* =========================================
+   TABLE CONTAINER
+========================================= */
+
+.table-container{
+
+    width:100%;
+
+    overflow-x:auto;
+
+    background:rgba(255,255,255,0.08);
+
+    backdrop-filter:blur(14px);
+
+    border-radius:18px;
+
+    padding:15px;
+
+    box-shadow:
+    0 8px 30px rgba(0,0,0,0.25);
+
+    border:1px solid rgba(255,255,255,0.12);
+}
+
+/* =========================================
+   TABLE
+========================================= */
+
+table{
+
+    width:100%;
+
+    border-collapse:collapse;
+
+    overflow:hidden;
+
+    border-radius:14px;
+
+    background:rgba(255,255,255,0.05);
+}
+
+/* =========================================
+   TABLE HEADER
+========================================= */
+
+thead{
+
+    background:
+    linear-gradient(
+        135deg,
+        #1e3a8a,
+        #0891b2
+    );
+}
+
+thead th{
+
+    padding:12px 10px;
+
+    text-align:left;
+
+    color:white;
+
+    font-size:14px;
+
+    font-weight:600;
+}
+
+/* =========================================
+   TABLE BODY
+========================================= */
+
+tbody tr{
+
+    transition:0.25s ease;
+
+    border-bottom:
+    1px solid rgba(255,255,255,0.06);
+}
+
+tbody tr:hover{
+
+    background:rgba(255,255,255,0.10);
+}
+
+tbody td{
+
+    padding:10px;
+
+    color:white;
+
+    font-size:13px;
+
+    vertical-align:middle;
+}
+
+/* =========================================
+   IMAGE
+========================================= */
+
+.patient-image{
+
+    width:55px;
+
+    height:55px;
+
+    object-fit:cover;
+
+    border-radius:10px;
+
+    border:2px solid rgba(255,255,255,0.2);
+
+    transition:0.3s ease;
+}
+
+.patient-image:hover{
+
+    transform:scale(1.05);
+}
+
+/* =========================================
+   RESULT STATUS
+========================================= */
+
+.positive{
+
+    color:#ff4d4d;
+
+    font-weight:600;
+}
+
+.negative{
+
+    color:#22c55e;
+
+    font-weight:600;
+}
+
+/* =========================================
+   BUTTONS
+========================================= */
+
+.action-btn{
+
+    text-decoration:none;
+
+    padding:7px 12px;
+
+    border-radius:8px;
+
+    font-size:12px;
+
+    font-weight:600;
+
+    transition:0.25s ease;
+
+    display:inline-block;
+}
+
+/* VIEW BUTTON */
+
+.view-btn{
+
+    background:#0d6efd;
+
+    color:white;
+}
+
+.view-btn:hover{
+
+    background:#2563eb;
+}
+
+/* DELETE BUTTON */
+
+.delete-btn{
+
+    background:#ef4444;
+
+    color:white;
+}
+
+.delete-btn:hover{
+
+    background:#dc2626;
+}
+
+/* =========================================
+   EMPTY DATA
+========================================= */
+
+.no-data{
+
+    text-align:center;
+
+    padding:20px;
+
+    color:rgba(255,255,255,0.8);
+
+    font-size:15px;
+}
+
+/* =========================================
+   SCROLLBAR
+========================================= */
+
+::-webkit-scrollbar{
+    height:8px;
+    width:8px;
+}
+
+::-webkit-scrollbar-thumb{
+    background:#0d6efd;
+    border-radius:10px;
+}
+
+::-webkit-scrollbar-track{
+    background:rgba(255,255,255,0.08);
+}
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media(max-width:991px){
+
+    body{
+        padding:15px;
+    }
+
+    h2{
+        font-size:24px;
+    }
+
+    table{
+        min-width:850px;
+    }
+}
+
+@media(max-width:600px){
+
+    h2{
+        font-size:20px;
+    }
+
+    .table-container{
+        padding:10px;
+    }
+
+    thead th,
+    tbody td{
+
+        font-size:12px;
+        padding:8px;
+    }
+
+    .patient-image{
+
+        width:45px;
+        height:45px;
+    }
+}

@@ -1,0 +1,156 @@
+/* ======================================
+   GLOBAL STYLES
+====================================== */
+
+body {
+    margin: 0;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: linear-gradient(135deg, #0f172a, #1e293b);
+    color: #e2e8f0;
+}
+
+/* ======================================
+   SIDEBAR (kept simple green but improved)
+====================================== */
+
+.sidebar {
+    width: 250px;
+    height: 100vh;
+    background: #198754;
+    color: white;
+    position: fixed;
+    padding-top: 25px;
+    box-shadow: 5px 0 20px rgba(0,0,0,0.3);
+}
+
+.sidebar h3 {
+    text-align: center;
+    margin-bottom: 30px;
+    font-weight: bold;
+}
+
+.sidebar a {
+    display: block;
+    color: white;
+    padding: 14px 20px;
+    text-decoration: none;
+    transition: 0.3s;
+    border-left: 4px solid transparent;
+}
+
+.sidebar a:hover {
+    background: #146c43;
+    border-left: 4px solid #fff;
+    padding-left: 25px;
+}
+
+/* ======================================
+   MAIN AREA
+====================================== */
+
+.main {
+    margin-left: 250px;
+    padding: 25px;
+}
+
+/* ======================================
+   TOP BAR (glass effect)
+====================================== */
+
+.topbar {
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(10px);
+    padding: 18px 25px;
+    border-radius: 12px;
+    margin-bottom: 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+}
+
+/* ======================================
+   STATS CARDS
+====================================== */
+
+.stat-card {
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(10px);
+    padding: 25px;
+    border-radius: 15px;
+    text-align: center;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+    transition: 0.3s;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+}
+
+/* ======================================
+   TABLE CONTAINER
+====================================== */
+
+.card-box {
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(12px);
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+}
+
+/* ======================================
+   TABLE DESIGN
+====================================== */
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    overflow: hidden;
+    border-radius: 10px;
+}
+
+thead {
+    background: #198754;
+    color: white;
+}
+
+th, td {
+    padding: 12px;
+    text-align: center;
+}
+
+tbody tr {
+    background: rgba(255,255,255,0.05);
+    transition: 0.3s;
+}
+
+tbody tr:hover {
+    background: rgba(255,255,255,0.12);
+}
+
+/* RESULT COLORS */
+
+.text-danger {
+    color: #ff6b6b;
+    font-weight: bold;
+}
+
+.text-success {
+    color: #51cf66;
+    font-weight: bold;
+}
+
+/* ======================================
+   RESPONSIVE
+====================================== */
+
+@media (max-width: 768px) {
+    .sidebar {
+        width: 200px;
+    }
+
+    .main {
+        margin-left: 200px;
+    }
+}

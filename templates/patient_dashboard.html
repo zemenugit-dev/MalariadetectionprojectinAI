@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <title>Patient Dashboard</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <!-- CSS -->
+    <link rel="stylesheet"
+    href="{{ url_for('static', filename='css/patient_dashboard.css') }}">
+
+</head>
+
+<body>
+
+<!-- =========================================
+     SIDEBAR
+========================================= -->
+
+<div class="sidebar">
+
+    <h3>
+        <i class="fas fa-user"></i>
+        Patient
+    </h3>
+
+    <a href="/patient">
+        <i class="fas fa-home"></i>
+        Dashboard
+    </a>
+
+    <a href="/my_history">
+        <i class="fas fa-history"></i>
+        My History
+    </a>
+
+    <a href="/predict_page">
+        <i class="fas fa-microscope"></i>
+        Predict Malaria
+    </a>
+
+    <a href="/logout">
+        <i class="fas fa-sign-out-alt"></i>
+        Logout
+    </a>
+
+</div>
+
+<!-- =========================================
+     MAIN CONTENT
+========================================= -->
+
+<div class="main">
+
+    <!-- TOPBAR -->
+
+    <div class="topbar">
+
+        <h4>Patient Dashboard</h4>
+
+        <span>
+            Welcome {{ user_name }}
+        </span>
+
+    </div>
+
+    <!-- =========================================
+         STATS
+    ========================================= -->
+
+    <div class="row">
+
+        <!-- TOTAL -->
+
+        <div class="col-md-6">
+
+            <div class="stat-card">
+
+                <h5>Total My Predictions</h5>
+
+                <h3>{{ total_my_predictions }}</h3>
+
+            </div>
+
+        </div>
+
+        <!-- LAST RESULT -->
+
+        <div class="col-md-6">
+
+            <div class="stat-card">
+
+                <h5>Last Result</h5>
+
+                <h3>{{ last_result }}</h3>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <br>
+
+    <!-- =========================================
+         PREDICTION HISTORY
+    ========================================= -->
+
+    <div class="card-box">
+
+        <h5>My Prediction History</h5>
+
+        <table class="table table-striped table-hover mt-3">
+
+            <thead>
+
+                <tr>
+
+                    <th>ID</th>
+
+                    <th>Result</th>
+
+                    <th>Confidence</th>
+
+                    <th>Date</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                {% if predictions %}
+
+                    {% for p in predictions %}
+
+                    <tr>
+
+                        <!-- ID -->
+                        <td>{{ p[0] }}</td>
+
+                        <!-- RESULT -->
+                        <td>
+
+                            {% if 'Parasitized' in p[1] %}
+
+                                <span class="text-danger fw-bold">
+
+                                    {{ p[1] }}
+
+                                </span>
+
+                            {% else %}
+
+                                <span class="text-success fw-bold">
+
+                                    {{ p[1] }}
+
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+                        <!-- CONFIDENCE -->
+                        <td>{{ p[2] }}%</td>
+
+                        <!-- DATE -->
+                        <td>{{ p[3] }}</td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                {% else %}
+
+                    <tr>
+
+                        <td colspan="4" class="text-center text-light">
+
+                            No prediction history found.
+
+                        </td>
+
+                    </tr>
+
+                {% endif %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+</body>
+</html>

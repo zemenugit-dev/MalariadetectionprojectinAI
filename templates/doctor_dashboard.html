@@ -1,0 +1,231 @@
+<!-- templates/doctor_dashboard.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Doctor Dashboard</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <!-- External CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/doctor_dashboard.css') }}">
+
+</head>
+
+<body>
+
+<!-- SIDEBAR -->
+<div class="sidebar" id="sidebar">
+
+    <div>
+
+        <div class="logo-section">
+
+            <div class="doctor-icon">
+                <i class="fas fa-user-md"></i>
+            </div>
+
+            <h3>Doctor Panel</h3>
+
+            <p>Malaria AI System</p>
+
+        </div>
+
+        <div class="menu">
+
+            <a href="#" class="active">
+                <i class="fas fa-home"></i>
+                Dashboard
+            </a>
+
+            <!-- <a href="#">
+                <i class="fas fa-virus"></i>
+                Predictions
+            </a> -->
+
+            <a href="/patients"> <i class="fas fa-users"></i>Patients</a>
+
+            <!-- <a href="#">
+                <i class="fas fa-image"></i>
+                Uploaded Images
+            </a> -->
+
+            <!-- <a href="#">
+                <i class="fas fa-chart-line"></i>
+                Statistics
+            </a> -->
+
+            <a href="/predict_page">
+                <i class="fas fa-microscope"></i>
+                Predict Malaria
+            </a>
+<div class="logout-section">
+
+        <a href="/logout" class="logout-btn"> <i class="fas fa-sign-out-alt"></i> Logout</a></div>
+        </div>
+
+    </div>
+ 
+   
+
+</div>
+
+<!-- MAIN -->
+<div class="main-content">
+
+    <!-- TOPBAR -->
+    <div class="topbar">
+
+        <div>
+
+            <h2 class="dashboard-title">
+                Doctor Dashboard
+            </h2>
+
+            <p class="dashboard-subtitle">
+                Welcome back Doctor
+            </p>
+
+        </div>
+
+        <button class="menu-toggle" id="menuToggle">
+            <i class="fas fa-bars"></i>
+        </button>
+
+    </div>
+
+    <!-- STATISTICS -->
+    <div class="row g-4">
+
+        <div class="col-lg-4 col-md-6">
+
+            <div class="stats-card patients-card">
+
+                <div class="stats-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+
+                <div>
+
+                    <h5>Total Patients</h5>
+
+                    <h2>{{ total_users }}</h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-lg-4 col-md-6">
+
+            <div class="stats-card predictions-card">
+
+                <div class="stats-icon">
+                    <i class="fas fa-virus"></i>
+                </div>
+
+                <div>
+
+                    <h5>Total Predictions</h5>
+
+                    <h2>{{ total_predictions }}</h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-lg-4 col-md-6">
+
+            <div class="stats-card malaria-card">
+
+                <div class="stats-icon">
+                    <i class="fas fa-heartbeat"></i>
+                </div>
+
+                <div>
+
+                    <h5>Malaria Cases</h5>
+
+                    <h2>{{ positive_cases }}</h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- RECENT ACTIVITY -->
+    <div class="activity-box">
+
+        <div class="activity-header">
+
+            <h4>
+                <i class="fas fa-clock"></i>
+                Recent Activity
+            </h4>
+
+        </div>
+
+        <div class="activity-item">
+
+            <div class="activity-icon success">
+                <i class="fas fa-check"></i>
+            </div>
+
+            <div>
+                <h6>AI Prediction Running</h6>
+                <p>AI model is analyzing blood cell microscope images.</p>
+            </div>
+
+        </div>
+
+        <div class="activity-item">
+
+            <div class="activity-icon primary">
+                <i class="fas fa-upload"></i>
+            </div>
+
+            <div>
+                <h6>Patient Uploads</h6>
+                <p>Patients uploaded new malaria test images.</p>
+            </div>
+
+        </div>
+
+        <div class="activity-item">
+
+            <div class="activity-icon danger">
+                <i class="fas fa-database"></i>
+            </div>
+
+            <div>
+                <h6>Database Updated</h6>
+                <p>Prediction results stored successfully.</p>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- External JS -->
+<script src="{{ url_for('static', filename='js/doctor_dashboard.js') }}"></script>
+
+</body>
+</html>

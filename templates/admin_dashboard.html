@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Dashboard - Malaria Detection</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin_dashboard.css') }}">
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+
+        <h2>Malaria System</h2>
+
+        <div class="admin-info">
+            <p>👤 Admin Panel</p>
+            <small>Role: Administrator</small>
+        </div>
+
+        <ul class="menu">
+
+            <!-- DASHBOARD -->
+            <li><a href="/admin">🏠 Dashboard</a></li>
+
+            <!-- CREATE USER -->
+            <li><a href="/register">➕ Add User</a></li>
+
+            <!-- MANAGE USERS (CRUD MAIN PAGE) -->
+            <li><a href="/admin/users">👥 Manage Users</a></li>
+
+            <!-- REPORTS -->
+            <!-- <li><a href="/admin/reports">📊 Reports</a></li>
+
+            <!-- PREDICTIONS (OPTIONAL FUTURE PAGE) -->
+            <!-- <li><a href="/patients">🧪 Predictions</a></li> -->
+
+            <!-- LOGOUT -->
+            <li><a href="/logout" class="logout-btn">🚪 Logout</a></li>
+
+        </ul>
+
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="main">
+
+        <div class="topbar">
+            <h1>Admin Dashboard</h1>
+        </div>
+
+        <!-- CARDS -->
+        <div class="cards">
+
+            <div class="card">
+                <h3>Total Users</h3>
+                <p>{{ total_users }}</p>
+            </div>
+
+            <div class="card">
+                <h3>Total Predictions</h3>
+                <p>{{ total_predictions }}</p>
+            </div>
+
+            <div class="card">
+                <h3>Positive Cases</h3>
+                <p>{{ positive_cases }}</p>
+            </div>
+
+            <div class="card">
+                <h3>System Status</h3>
+                <p>Active</p>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>

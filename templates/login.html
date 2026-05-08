@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Login | Malaria AI System</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/register.css') }}">
+</head>
+
+<body>
+
+<div class="register-container">
+
+    <!-- LEFT -->
+    <div class="left-section">
+        <div class="overlay"></div>
+        <div class="content">
+            <h1>Malaria Detection AI</h1>
+            <p>Login to access system dashboards</p>
+        </div>
+    </div>
+
+    <!-- RIGHT -->
+    <div class="right-section">
+
+        <div class="form-box">
+
+            <h2>Login</h2>
+            <p class="subtitle">Enter your credentials</p>
+
+            {% if error %}
+                <div class="alert error">
+                    {{ error }}
+                </div>
+            {% endif %}
+
+            <form action="/login" method="POST">
+
+                <div class="input-group">
+                    <label>Email</label>
+                    <input type="email" name="email" required>
+                </div>
+
+                <div class="input-group">
+                    <label>Password</label>
+                    <input type="password" name="password" required>
+                </div>
+
+                <button type="submit" class="register-btn">
+                    Login
+                </button>
+
+            </form>
+
+            <!-- <div class="bottom-text">
+                Don't have an account?
+                <a href="/register">Register</a>
+            </div> -->
+
+        </div>
+
+    </div>
+
+</div>
+<script src="{{ url_for('static', filename='js/login.js') }}"></script>
+</body>
+</html>

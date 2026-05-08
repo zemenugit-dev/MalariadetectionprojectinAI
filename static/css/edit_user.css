@@ -1,0 +1,86 @@
+/* BODY */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #2c3e50, #3498db);
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* CONTAINER */
+.container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+/* CARD */
+.card {
+    background: white;
+    padding: 30px;
+    width: 400px;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    text-align: center;
+}
+
+/* TITLE */
+.card h2 {
+    margin-bottom: 20px;
+    color: #333;
+}
+
+/* LABEL */
+label {
+    display: block;
+    text-align: left;
+    margin: 10px 0 5px;
+    font-weight: bold;
+    color: #555;
+}
+
+/* INPUTS */
+input, select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    outline: none;
+    margin-bottom: 10px;
+}
+
+/* FOCUS EFFECT */
+input:focus, select:focus {
+    border-color: #3498db;
+}
+
+/* BUTTON */
+button {
+    width: 100%;
+    padding: 12px;
+    background: #3498db;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+button:hover {
+    background: #2980b9;
+}
+
+/* BACK LINK */
+.back {
+    display: block;
+    margin-top: 15px;
+    text-decoration: none;
+    color: #555;
+}
+
+.back:hover {
+    color: #000;
+}

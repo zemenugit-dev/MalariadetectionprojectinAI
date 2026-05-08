@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Manage Users</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin_users.css') }}">
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1 class="title">👥 Manage Users</h1>
+
+    <table class="user-table">
+
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            {% for user in users %}
+            <tr>
+
+                <td>{{ user[0] }}</td>
+                <td>{{ user[1] }}</td>
+                <td>{{ user[2] }}</td>
+
+                <td>
+                    <span class="role {{ user[3] }}">
+                        {{ user[3] }}
+                    </span>
+                </td>
+
+                <td class="actions">
+
+                    <a class="edit-btn" href="/admin/users/edit/{{ user[0] }}">
+                        ✏️ Edit
+                    </a>
+
+                    <form action="/admin/users/delete/{{ user[0] }}" method="POST"
+                          onsubmit="return confirm('Delete this user?')">
+
+                        <button class="delete-btn" type="submit">
+                            🗑 Delete
+                        </button>
+
+                    </form>
+
+                </td>
+
+            </tr>
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+</body>
+</html>
