@@ -3,6 +3,7 @@ __pycache__/
 *.pyc
 dataset/
 model/
+!model/malaria_model.keras
 *.db
 .vscode/
 .idea/
