@@ -12,8 +12,7 @@ from werkzeug.utils import secure_filename
 # FLASK SETUP
 # ==========================================
 app = Flask(__name__)
-app.secret_key = "malaria_ai_secret_key_2026"
-
+app.secret_key = os.environ.get("SECRET_KEY", "dev_secret_key")
 UPLOAD_FOLDER = "static/uploads"
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 app.config["MAX_CONTENT_LENGTH"] = 5 * 1024 * 1024
@@ -31,7 +30,10 @@ init_db()
 # LOAD MODEL
 # ==========================================
 print("Loading AI Model...")
-model = tf.keras.models.load_model("model/malaria_model.keras")
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+MODEL_PATH = os.path.join(BASE_DIR, "model", "malaria_model.keras")
+
+model = tf.keras.models.load_model(MODEL_PATH)
 print("Model Loaded Successfully!")
 
 # ==========================================
@@ -188,20 +190,38 @@ def predict():
 
     if file and allowed_file(file.filename):
 
+        import time
+        from werkzeug.utils import secure_filename
+
+        # ==========================================
+        # SAFE FILE NAME (PREVENT OVERWRITE)
+        # ==========================================
         filename = secure_filename(file.filename)
-        filepath = os.path.join(app.config["UPLOAD_FOLDER"], filename)
+        unique_name = str(int(time.time())) + "_" + filename
+
+        filepath = os.path.join(app.config["UPLOAD_FOLDER"], unique_name)
         file.save(filepath)
 
+        # ==========================================
+        # PREDICTION
+        # ==========================================
         result, confidence = predict_image(filepath)
 
+        # ==========================================
+        # SAVE TO DATABASE
+        # ==========================================
         save_prediction(
-            image=filename,
+            image=unique_name,
             result=result,
             confidence=confidence,
             user_id=session.get("user_id")
         )
 
-        return render_template("predict.html", prediction=result, image=filename)
+        return render_template(
+            "predict.html",
+            prediction=result,
+            image=unique_name
+        )
 
     return render_template("predict.html", prediction="Invalid file")
 
@@ -475,9 +495,6 @@ def logout():
 # ==========================================
 if __name__ == "__main__":
     app.run(
-        debug=True,
         host="0.0.0.0",
-        port=5001,
-        use_reloader=False,   # IMPORTANT (prevents double Flask process)
-        threaded=True         # IMPORTANT (handles multiple requests safely)
+        port=5000
     )

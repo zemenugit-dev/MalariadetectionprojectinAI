@@ -3,8 +3,5 @@ gunicorn
 tensorflow-cpu==2.15.0
 numpy
 opencv-python-headless
-pandas
-matplotlib
-scikit-learn
 pillow
 werkzeug
