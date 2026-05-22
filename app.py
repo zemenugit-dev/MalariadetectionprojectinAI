@@ -28,13 +28,21 @@ init_db()
 
 # ==========================================
 # LOAD MODEL
-# ==========================================
-print("Loading AI Model...")
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 MODEL_PATH = os.path.join(BASE_DIR, "model", "malaria_model.keras")
 
-model = tf.keras.models.load_model(MODEL_PATH)
-print("Model Loaded Successfully!")
+model = None
+
+def load_model_once():
+    global model
+    if model is None:
+        print("Loading AI Model...")
+        model = tf.keras.models.load_model(
+            MODEL_PATH,
+            compile=False
+        )
+        print("Model Loaded Successfully!")
+    return model
 
 # ==========================================
 # HELPERS
@@ -72,6 +80,11 @@ def predict_image(image_path):
     img = img.astype("float32") / 255.0
     img = np.expand_dims(img, axis=0)
 
+    # ✅ SAFE MODEL LOADING (NEW FIX)
+    global model
+    if model is None:
+        model = load_model_once()
+
     prediction = model.predict(img, verbose=0)[0][0]
 
     if prediction >= 0.5:
@@ -82,7 +95,6 @@ def predict_image(image_path):
         result = f"Uninfected (Healthy) - {confidence}%"
 
     return result, confidence
-
 # ==========================================
 # HOME
 # ==========================================
