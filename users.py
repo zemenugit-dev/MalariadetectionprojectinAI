@@ -1,15 +1,26 @@
-import sqlite3
-from database import DB_PATH
+import hashlib
+from utils.database import get_connection, init_db
 
-conn = sqlite3.connect(DB_PATH)
-cursor = conn.cursor()
+init_db()
 
-cursor.execute("""
-INSERT INTO users (name, email, password, role)
-VALUES (?, ?, ?, ?)
-""", ("John Doe", "john@example.com", "123456", "user"))
+def hash_pw(pw):
+    return hashlib.sha256(pw.encode()).hexdigest()
 
-conn.commit()
-conn.close()
+users = [
+    ("Admin", "admin@gmail.com", "Zed1929@!@!", "admin"),
+    ("Doctor", "doctor@gmail.com", "Zed1929@!@!", "doctor"),
+    ("Patient", "patient@gmail.com", "Zed1929@!@!", "patient")
+]
 
-print("User inserted successfully")
+with get_connection() as conn:
+    cursor = conn.cursor()
+
+    for u in users:
+        cursor.execute("""
+            INSERT INTO users (name, email, password, role)
+            VALUES (?, ?, ?, ?)
+        """, (u[0], u[1], hash_pw(u[2]), u[3]))
+
+    conn.commit()
+
+print("Users created successfully")
