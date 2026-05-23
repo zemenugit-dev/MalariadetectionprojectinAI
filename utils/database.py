@@ -156,3 +156,30 @@ def get_user_predictions(user_id):
     except Exception as e:
         print("History Fetch Error:", e)
         return []
+    # ======================================
+# SAVE PREDICTION
+# ======================================
+
+def save_prediction(image, result, confidence, user_id=None):
+
+    try:
+        with get_connection() as conn:
+            cursor = conn.cursor()
+
+            cursor.execute("""
+            INSERT INTO predictions
+            (user_id, image, result, confidence)
+            VALUES (?, ?, ?, ?)
+            """, (
+                user_id,
+                image,
+                result,
+                confidence
+            ))
+
+            conn.commit()
+
+            print("Prediction saved successfully!")
+
+    except Exception as e:
+        print("Database Save Error:", e)
