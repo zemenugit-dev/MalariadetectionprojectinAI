@@ -41,7 +41,6 @@ def get_connection():
 # ======================================
 # INIT DATABASE (CREATE TABLES)
 # ======================================
-
 def init_db():
     """
     Create users and predictions tables if not exist
@@ -49,103 +48,70 @@ def init_db():
 
     print("Initializing database...")
 
-    with get_connection() as conn:
-        cursor = conn.cursor()
-
-        # ======================================
-        # USERS TABLE
-        # ======================================
-        cursor.execute("""
-        CREATE TABLE IF NOT EXISTS users (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT NOT NULL,
-            email TEXT UNIQUE NOT NULL,
-            password TEXT NOT NULL,
-            role TEXT NOT NULL DEFAULT 'patient',
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        )
-        """)
-
-        # ======================================
-        # PREDICTIONS TABLE
-        # ======================================
-        cursor.execute("""
-        CREATE TABLE IF NOT EXISTS predictions (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            user_id INTEGER,
-            image TEXT NOT NULL,
-            result TEXT NOT NULL,
-            confidence REAL NOT NULL,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            FOREIGN KEY(user_id) REFERENCES users(id)
-            ON DELETE SET NULL
-        )
-        """)
-
-        conn.commit()
-
-    print("Tables created successfully!")
-
-
-# ======================================
-# SAVE USER (REGISTER)
-# ======================================
-
-def save_user(name, email, password, role="patient"):
-    """
-    Insert new user into users table
-    """
-
     try:
         with get_connection() as conn:
             cursor = conn.cursor()
 
+            # USERS TABLE
             cursor.execute("""
-            INSERT INTO users (name, email, password, role)
-            VALUES (?, ?, ?, ?)
-            """, (name, email, password, role))
-
-            conn.commit()
-
-        print("User saved successfully!")
-
-    except sqlite3.IntegrityError:
-        print("Error: Email already exists!")
-
-    except Exception as e:
-        print("User Save Error:", e)
-
-
-# ======================================
-# SAVE PREDICTION
-# ======================================
-
-def save_prediction(image, result, confidence, user_id=None):
-    """
-    Save malaria prediction result
-    """
-
-    try:
-        with get_connection() as conn:
-            cursor = conn.cursor()
-
-            cursor.execute("""
-            INSERT INTO predictions (
-                user_id,
-                image,
-                result,
-                confidence
+            CREATE TABLE IF NOT EXISTS users (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                name TEXT NOT NULL,
+                email TEXT UNIQUE NOT NULL,
+                password TEXT NOT NULL,
+                role TEXT NOT NULL DEFAULT 'patient',
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
-            VALUES (?, ?, ?, ?)
-            """, (user_id, image, result, confidence))
+            """)
+
+            # PREDICTIONS TABLE
+            cursor.execute("""
+            CREATE TABLE IF NOT EXISTS predictions (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                user_id INTEGER,
+                image TEXT NOT NULL,
+                result TEXT NOT NULL,
+                confidence REAL NOT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY(user_id) REFERENCES users(id)
+                ON DELETE SET NULL
+            )
+            """)
+
+            # DEFAULT USERS SEED
+            cursor.execute("SELECT COUNT(*) FROM users")
+            count = cursor.fetchone()[0]
+
+            if count == 0:
+                print("Creating default users...")
+
+                import hashlib
+                def hash_password(password):
+                    return hashlib.sha256(password.encode()).hexdigest()
+
+                cursor.execute("""
+                    INSERT INTO users (name, email, password, role)
+                    VALUES (?, ?, ?, ?)
+                """, ("Admin", "admin@gmail.com", hash_password("admin123"), "admin"))
+
+                cursor.execute("""
+                    INSERT INTO users (name, email, password, role)
+                    VALUES (?, ?, ?, ?)
+                """, ("Doctor", "doctor@gmail.com", hash_password("doctor123"), "doctor"))
+
+                cursor.execute("""
+                    INSERT INTO users (name, email, password, role)
+                    VALUES (?, ?, ?, ?)
+                """, ("Patient", "patient@gmail.com", hash_password("patient123"), "patient"))
+
+                print("Default users created successfully!")
 
             conn.commit()
 
-        print("Prediction saved successfully!")
+        print("Tables created successfully!")
 
     except Exception as e:
-        print("Database Save Error:", e)
-
+        print("Database Error:", e)
 
 # ======================================
 # GET USER BY EMAIL (LOGIN SUPPORT)
