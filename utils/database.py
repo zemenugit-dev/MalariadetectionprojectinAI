@@ -31,7 +31,6 @@ def get_connection():
     conn = sqlite3.connect(DB_PATH, timeout=30)
 
     # Stability improvements
-    conn.execute("PRAGMA journal_mode=WAL;")
     conn.execute("PRAGMA foreign_keys = ON;")
     conn.execute("PRAGMA busy_timeout = 5000;")
 
@@ -160,10 +159,15 @@ def get_user_predictions(user_id):
 # SAVE PREDICTION
 # ======================================
 
+# ======================================
+# SAVE PREDICTION
+# ======================================
+
 def save_prediction(image, result, confidence, user_id=None):
 
     try:
         with get_connection() as conn:
+
             cursor = conn.cursor()
 
             cursor.execute("""

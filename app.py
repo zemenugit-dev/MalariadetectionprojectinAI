@@ -223,12 +223,18 @@ def register():
 def predict():
 
     if "image" not in request.files:
-        return render_template("predict.html", prediction="No image uploaded")
+        return render_template(
+            "predict.html",
+            prediction="No image uploaded"
+        )
 
     file = request.files["image"]
 
     if file.filename == "":
-        return render_template("predict.html", prediction="No file selected")
+        return render_template(
+            "predict.html",
+            prediction="No file selected"
+        )
 
     if file and allowed_file(file.filename):
 
@@ -236,16 +242,34 @@ def predict():
         from werkzeug.utils import secure_filename
 
         # ==========================================
-        # SAFE FILE NAME (PREVENT OVERWRITE)
+        # SAFE FILE NAME
         # ==========================================
         filename = secure_filename(file.filename)
-        unique_name = str(int(time.time())) + "_" + filename
 
-        filepath = os.path.join(app.config["UPLOAD_FOLDER"], unique_name)
+        unique_name = (
+            str(int(time.time())) + "_" + filename
+        )
+
+        # ==========================================
+        # ENSURE UPLOAD FOLDER EXISTS
+        # ==========================================
+        os.makedirs(
+            app.config["UPLOAD_FOLDER"],
+            exist_ok=True
+        )
+
+        filepath = os.path.join(
+            app.config["UPLOAD_FOLDER"],
+            unique_name
+        )
+
+        print("Saving image to:", filepath)
+
+        # SAVE IMAGE
         file.save(filepath)
 
         # ==========================================
-        # PREDICTION
+        # PREDICT IMAGE
         # ==========================================
         result, confidence = predict_image(filepath)
 
@@ -265,7 +289,10 @@ def predict():
             image=unique_name
         )
 
-    return render_template("predict.html", prediction="Invalid file")
+    return render_template(
+        "predict.html",
+        prediction="Invalid file"
+    )
 
 # ==========================================
 # ADMIN DASHBOARD
