@@ -509,48 +509,68 @@ def patients():
         patients=patients_data
     )
 #this is also predict page 
-@app.route("/predict_page")
-def predict_page():
-
-    if not is_logged_in():
-        return redirect("/login")
-
-    return render_template("predict.html")
-#this is my history sidbar route 
 # ==========================================
-# MY HISTORY
+# PREDICTION FUNCTION
 # ==========================================
-@app.route("/my_history")
-def my_history():
+def predict_image(image_path):
 
-    if not is_logged_in() or not is_patient():
-        return redirect("/login")
+    try:
 
-    user_id = session.get("user_id")
+        print("Reading image:", image_path)
 
-    with get_connection() as conn:
-        cursor = conn.cursor()
+        # READ IMAGE
+        img = cv2.imread(image_path)
 
-        cursor.execute("""
-            SELECT
-                u.name,
-                p.image,
-                p.result,
-                p.confidence,
-                p.created_at
-            FROM predictions p
-            JOIN users u
-            ON p.user_id = u.id
-            WHERE p.user_id = ?
-            ORDER BY p.id DESC
-        """, (user_id,))
+        if img is None:
+            print("Image could not be read!")
+            return "Invalid Image", 0
 
-        history = cursor.fetchall()
+        # RESIZE
+        img = cv2.resize(img, (64, 64))
 
-    return render_template(
-        "my_history.html",
-        history=history
-    )
+        # NORMALIZE
+        img = img.astype("float32") / 255.0
+
+        # EXPAND DIMENSION
+        img = np.expand_dims(img, axis=0)
+
+        # LOAD MODEL SAFELY
+        global model
+
+        if model is None:
+            model = load_model_once()
+
+        print("Running prediction...")
+
+        # PREDICT
+        prediction = model.predict(img, verbose=0)[0][0]
+
+        print("Prediction value:", prediction)
+
+        # RESULT
+        if prediction >= 0.5:
+
+            confidence = round(float(prediction) * 100, 2)
+
+            result = (
+                f"Parasitized (Malaria Detected) - {confidence}%"
+            )
+
+        else:
+
+            confidence = round((1 - float(prediction)) * 100, 2)
+
+            result = (
+                f"Uninfected (Healthy) - {confidence}%"
+            )
+
+        return result, confidence
+
+    except Exception as e:
+
+        print("Prediction Error:", e)
+
+        return f"Prediction Failed: {str(e)}", 0
 # ==========================================
 # LOGOUT
 # ==========================================
