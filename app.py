@@ -11,13 +11,43 @@ from werkzeug.utils import secure_filename
 # ==========================================
 # FLASK SETUP
 # ==========================================
+# ==========================================
+# FLASK SETUP
+# ==========================================
+
 app = Flask(__name__)
-app.secret_key = os.environ.get("SECRET_KEY", "dev_secret_key")
-UPLOAD_FOLDER = "static/uploads"
+
+# SECRET KEY
+app.secret_key = os.environ.get(
+    "SECRET_KEY",
+    "dev_secret_key"
+)
+
+# BASE DIRECTORY
+BASE_DIR = os.path.dirname(
+    os.path.abspath(__file__)
+)
+
+# SAFE ABSOLUTE UPLOAD PATH
+UPLOAD_FOLDER = os.path.join(
+    BASE_DIR,
+    "static",
+    "uploads"
+)
+
+# FLASK CONFIG
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
+
+# MAX IMAGE SIZE = 5MB
 app.config["MAX_CONTENT_LENGTH"] = 5 * 1024 * 1024
 
-os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+# CREATE UPLOAD FOLDER AUTOMATICALLY
+os.makedirs(
+    UPLOAD_FOLDER,
+    exist_ok=True
+)
+
+print("Upload Folder:", UPLOAD_FOLDER)
 
 ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg"}
 
