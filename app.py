@@ -59,13 +59,12 @@ init_db()
 # ==========================================
 # LOAD MODEL
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-MODEL_PATH = os.path.join(BASE_DIR, "model", "malaria_model.keras")
+MODEL_PATH = os.path.join(BASE_DIR, "model", "malaria_model.h5")
 
 print("Loading model from:", MODEL_PATH)
 
 model = tf.keras.models.load_model(
-    MODEL_PATH,
-    compile=False
+    MODEL_PATH
 )
 
 print("Model loaded successfully")
