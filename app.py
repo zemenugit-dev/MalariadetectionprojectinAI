@@ -1,5 +1,5 @@
 from utils.database import init_db, save_prediction, get_connection
-
+import time  # 👈 ADD THIS LINE HERE AT THE TOP
 from flask import Flask, render_template, request, redirect, flash, session
 import tensorflow as tf
 import numpy as np
@@ -221,79 +221,54 @@ def register():
 # ==========================================
 @app.route("/predict", methods=["POST"])
 def predict():
+    if not is_logged_in():
+        return redirect("/login")
 
     if "image" not in request.files:
-        return render_template(
-            "predict.html",
-            prediction="No image uploaded"
-        )
+        return render_template("predict.html", prediction="No image uploaded")
 
     file = request.files["image"]
-
     if file.filename == "":
-        return render_template(
-            "predict.html",
-            prediction="No file selected"
-        )
+        return render_template("predict.html", prediction="No file selected")
 
     if file and allowed_file(file.filename):
+        try:
+            filename = secure_filename(file.filename)
+            unique_name = f"{int(time.time())}_{filename}"
+            filepath = os.path.join(app.config["UPLOAD_FOLDER"], unique_name)
 
-        import time
-        from werkzeug.utils import secure_filename
+            file.save(filepath)
 
-        # ==========================================
-        # SAFE FILE NAME
-        # ==========================================
-        filename = secure_filename(file.filename)
+            # Run deep learning model inference
+            result_text, confidence = predict_image(filepath)
+            full_result_string = f"{result_text} - {confidence}%"
 
-        unique_name = (
-            str(int(time.time())) + "_" + filename
-        )
+            # Save record to database
+            save_prediction(
+                image=unique_name,
+                result=full_result_string,
+                confidence=confidence,
+                user_id=session.get("user_id")
+            )
 
-        # ==========================================
-        # ENSURE UPLOAD FOLDER EXISTS
-        # ==========================================
-        os.makedirs(
-            app.config["UPLOAD_FOLDER"],
-            exist_ok=True
-        )
+            return render_template(
+                "predict.html",
+                prediction=full_result_string,
+                image=unique_name
+            )
 
-        filepath = os.path.join(
-            app.config["UPLOAD_FOLDER"],
-            unique_name
-        )
+        except Exception as e:
+            # 🚨 THIS WILL SHOW YOU THE EXACT ERROR MESSAGE ON THE SCREEN
+            import traceback
+            error_details = traceback.format_exc()
+            print(error_details) # Sent to Render logs
+            return render_template(
+                "predict.html", 
+                prediction=f"CRASH ERROR: {str(e)}", 
+                error_debug=error_details
+            )
 
-        print("Saving image to:", filepath)
-
-        # SAVE IMAGE
-        file.save(filepath)
-
-        # ==========================================
-        # PREDICT IMAGE
-        # ==========================================
-        result, confidence = predict_image(filepath)
-
-        # ==========================================
-        # SAVE TO DATABASE
-        # ==========================================
-        save_prediction(
-            image=unique_name,
-            result=result,
-            confidence=confidence,
-            user_id=session.get("user_id")
-        )
-
-        return render_template(
-            "predict.html",
-            prediction=result,
-            image=unique_name
-        )
-
-    return render_template(
-        "predict.html",
-        prediction="Invalid file"
-    )
-
+    return render_template("predict.html", prediction="Invalid file format")
 # ==========================================
 # ADMIN DASHBOARD
 # ==========================================
