@@ -1,5 +1,5 @@
 from utils.database import init_db, save_prediction, get_connection
-import time  # 👈 ADD THIS LINE HERE AT THE TOP
+import time  
 from flask import Flask, render_template, request, redirect, flash, session
 import tensorflow as tf
 import numpy as np
@@ -11,10 +11,6 @@ from werkzeug.utils import secure_filename
 # ==========================================
 # FLASK SETUP
 # ==========================================
-# ==========================================
-# FLASK SETUP
-# ==========================================
-
 app = Flask(__name__)
 
 # SECRET KEY
@@ -58,7 +54,7 @@ init_db()
 
 # ==========================================
 # LOAD MODEL
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+# ==========================================
 MODEL_PATH = os.path.join(BASE_DIR, "model", "malaria_model.keras")
 
 model = None
@@ -67,9 +63,11 @@ def load_model_once():
     global model
     if model is None:
         print("Loading AI Model...")
+        # ✅ FIX: Added safe_mode=False to bypass structural layer mismatch on cloud servers
         model = tf.keras.models.load_model(
             MODEL_PATH,
-            compile=False
+            compile=False,
+            safe_mode=False
         )
         print("Model Loaded Successfully!")
     return model
@@ -110,7 +108,6 @@ def predict_image(image_path):
     img = img.astype("float32") / 255.0
     img = np.expand_dims(img, axis=0)
 
-    # ✅ SAFE MODEL LOADING (NEW FIX)
     global model
     if model is None:
         model = load_model_once()
@@ -118,13 +115,14 @@ def predict_image(image_path):
     prediction = model.predict(img, verbose=0)[0][0]
 
     if prediction >= 0.5:
-        confidence = round(prediction * 100, 2)
-        result = f"Parasitized (Malaria Detected) - {confidence}%"
+        confidence = round(float(prediction) * 100, 2)
+        result = f"Parasitized (Malaria Detected)"
     else:
-        confidence = round((1 - prediction) * 100, 2)
-        result = f"Uninfected (Healthy) - {confidence}%"
+        confidence = round(float((1 - prediction) * 100, 2))
+        result = f"Uninfected (Healthy)"
 
     return result, confidence
+
 # ==========================================
 # HOME
 # ==========================================
@@ -216,6 +214,7 @@ def register():
             return redirect("/register")
 
     return render_template("register.html")
+
 # ==========================================
 # PREDICT
 # ==========================================
@@ -258,7 +257,6 @@ def predict():
             )
 
         except Exception as e:
-            # 🚨 THIS WILL SHOW YOU THE EXACT ERROR MESSAGE ON THE SCREEN
             import traceback
             error_details = traceback.format_exc()
             print(error_details) # Sent to Render logs
@@ -269,6 +267,7 @@ def predict():
             )
 
     return render_template("predict.html", prediction="Invalid file format")
+
 # ==========================================
 # ADMIN DASHBOARD
 # ==========================================
@@ -327,13 +326,9 @@ def doctor():
 # ==========================================
 # PATIENT DASHBOARD
 # ==========================================
-# ==========================================
-# PATIENT DASHBOARD
-# ==========================================
 @app.route("/patient")
 def patient():
 
-    # security check
     if not is_logged_in() or not is_patient():
         return redirect("/login")
 
@@ -344,7 +339,6 @@ def patient():
         with get_connection() as conn:
             cursor = conn.cursor()
 
-            # ONLY THIS PATIENT DATA
             cursor.execute("""
                 SELECT
                     id,
@@ -367,8 +361,8 @@ def patient():
         )
 
     except Exception as e:
-
         return f"Error loading dashboard: {str(e)}"
+
 # ==========================================
 @app.route("/admin/users")
 def admin_users():
@@ -387,6 +381,8 @@ def admin_users():
         users = cursor.fetchall()
 
     return render_template("admin_users.html", users=users)
+
+# ==========================================
 # UPDATE USER
 # ==========================================
 @app.route("/admin/users/update/<int:user_id>", methods=["POST"])
@@ -411,7 +407,10 @@ def update_user(user_id):
         conn.commit()
 
     return redirect("/admin/users")
-#edit code 
+
+# ==========================================
+# EDIT USER
+# ==========================================
 @app.route("/admin/users/edit/<int:user_id>")
 def edit_user(user_id):
 
@@ -433,8 +432,9 @@ def edit_user(user_id):
         return "User not found", 404
 
     return render_template("edit_user.html", user=user)
+
 # ==========================================
-# DELETE USER (FIXED SAFE POST VERSION)
+# DELETE USER
 # ==========================================
 @app.route("/admin/users/delete/<int:user_id>", methods=["POST"])
 def delete_user(user_id):
@@ -452,7 +452,10 @@ def delete_user(user_id):
         conn.commit()
 
     return redirect("/admin/users")
-#this is patients 
+
+# ==========================================
+# PATIENTS LIST
+# ==========================================
 @app.route("/patients")
 def patients():
 
@@ -483,7 +486,7 @@ def patients():
         "patients.html",
         patients=patients_data
     )
-#this is also predict page 
+
 @app.route("/predict_page")
 def predict_page():
 
@@ -491,7 +494,7 @@ def predict_page():
         return redirect("/login")
 
     return render_template("predict.html")
-#this is my history sidbar route 
+
 # ==========================================
 # MY HISTORY
 # ==========================================
@@ -526,17 +529,12 @@ def my_history():
         "my_history.html",
         history=history
     )
-# ==========================================
-# LOGOUT
-# ==========================================
+
 @app.route("/logout")
 def logout():
     session.clear()
     return redirect("/login")
 
-# ==========================================
-# RUN APP
-# ==========================================
 if __name__ == "__main__":
     app.run(
         host="0.0.0.0",
