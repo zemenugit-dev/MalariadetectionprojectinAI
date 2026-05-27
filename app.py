@@ -55,8 +55,7 @@ init_db()
 # ==========================================
 # LOAD MODEL
 # ==========================================
-MODEL_PATH = os.path.join(BASE_DIR, "model", "malaria_model.keras")
-
+MODEL_PATH = os.path.join(BASE_DIR, "model", "malaria_model.h5")
 model = None
 
 def load_model_once():
