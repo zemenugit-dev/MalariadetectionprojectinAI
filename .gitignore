@@ -20,4 +20,4 @@ database/
 
 # Model folder (ignore everything except trained model)
 model/*
-!model/malaria_model.keras
+!model/malaria_model.h5
