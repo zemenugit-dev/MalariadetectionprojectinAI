@@ -91,7 +91,18 @@ def is_doctor():
 def is_patient():
     return session.get("role") == "patient"
 
-# ==========================================
+# ==========================================model = None
+
+def get_model():
+    global model
+    if model is None:
+        print("Loading model...")
+        model = tf.keras.models.load_model(
+            MODEL_PATH,
+            compile=False
+        )
+        print("Model loaded successfully")
+    return model
 # PREDICTION FUNCTION
 # ==========================================
 def predict_image(image_path):
@@ -105,19 +116,8 @@ def predict_image(image_path):
     img = img.astype("float32") / 255.0
     img = np.expand_dims(img, axis=0)
 
-    # ✅ SAFE MODEL LOADING (NEW FIX)
-model = None
-
-def get_model():
-    global model
-    if model is None:
-        print("Loading model...")
-        model = tf.keras.models.load_model(
-            MODEL_PATH,
-            compile=False
-        )
-        print("Model loaded successfully")
-    return model
+    # ✅ SAFE MODEL LOADING (NO WARNING FIX)
+    model = get_model()
 
     prediction = model.predict(img, verbose=0)[0][0]
 
