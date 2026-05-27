@@ -61,18 +61,14 @@ init_db()
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 MODEL_PATH = os.path.join(BASE_DIR, "model", "malaria_model.keras")
 
-model = None
+print("Loading model from:", MODEL_PATH)
 
-def load_model_once():
-    global model
-    if model is None:
-        print("Loading AI Model...")
-        model = tf.keras.models.load_model(
-            MODEL_PATH,
-            compile=False
-        )
-        print("Model Loaded Successfully!")
-    return model
+model = tf.keras.models.load_model(
+    MODEL_PATH,
+    compile=False
+)
+
+print("Model loaded successfully")
 
 # ==========================================
 # HELPERS
@@ -111,9 +107,7 @@ def predict_image(image_path):
     img = np.expand_dims(img, axis=0)
 
     # ✅ SAFE MODEL LOADING (NEW FIX)
-    global model
-    if model is None:
-        model = load_model_once()
+   
 
     prediction = model.predict(img, verbose=0)[0][0]
 
