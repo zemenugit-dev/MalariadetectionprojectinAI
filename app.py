@@ -222,78 +222,124 @@ def register():
 @app.route("/predict", methods=["POST"])
 def predict():
 
-    if "image" not in request.files:
+    try:
+
+        # ==========================================
+        # CHECK IMAGE EXISTS
+        # ==========================================
+        if "image" not in request.files:
+            return render_template(
+                "predict.html",
+                prediction="No image uploaded"
+            )
+
+        file = request.files["image"]
+
+        # ==========================================
+        # CHECK FILE NAME
+        # ==========================================
+        if file.filename == "":
+            return render_template(
+                "predict.html",
+                prediction="No file selected"
+            )
+
+        # ==========================================
+        # VALIDATE IMAGE TYPE
+        # ==========================================
+        if file and allowed_file(file.filename):
+
+            import time
+
+            # SAFE FILE NAME
+            filename = secure_filename(file.filename)
+
+            unique_name = (
+                str(int(time.time())) + "_" + filename
+            )
+
+            # CREATE UPLOAD FOLDER
+            os.makedirs(
+                app.config["UPLOAD_FOLDER"],
+                exist_ok=True
+            )
+
+            # FILE PATH
+            filepath = os.path.join(
+                app.config["UPLOAD_FOLDER"],
+                unique_name
+            )
+
+            print("Saving image to:", filepath)
+
+            # ==========================================
+            # SAVE IMAGE
+            # ==========================================
+            try:
+
+                file.save(filepath)
+
+                if not os.path.exists(filepath):
+
+                    return render_template(
+                        "predict.html",
+                        prediction="Image not saved"
+                    )
+
+                print("Image saved successfully!")
+
+            except Exception as e:
+
+                print("Upload Error:", str(e))
+
+                return render_template(
+                    "predict.html",
+                    prediction=f"Upload Error: {str(e)}"
+                )
+
+            # ==========================================
+            # PREDICT IMAGE
+            # ==========================================
+            print("Starting prediction...")
+
+            result, confidence = predict_image(filepath)
+
+            print("Prediction completed!")
+
+            # ==========================================
+            # SAVE TO DATABASE
+            # ==========================================
+            save_prediction(
+                image=unique_name,
+                result=result,
+                confidence=confidence,
+                user_id=session.get("user_id")
+            )
+
+            print("Prediction saved!")
+
+            # ==========================================
+            # RETURN RESULT
+            # ==========================================
+            return render_template(
+                "predict.html",
+                prediction=result,
+                image=unique_name
+            )
+
         return render_template(
             "predict.html",
-            prediction="No image uploaded"
+            prediction="Invalid file type"
         )
 
-    file = request.files["image"]
+    except Exception as e:
 
-    if file.filename == "":
-        return render_template(
-            "predict.html",
-            prediction="No file selected"
-        )
-
-    if file and allowed_file(file.filename):
-
-        import time
-        from werkzeug.utils import secure_filename
-
-        # ==========================================
-        # SAFE FILE NAME
-        # ==========================================
-        filename = secure_filename(file.filename)
-
-        unique_name = (
-            str(int(time.time())) + "_" + filename
-        )
-
-        # ==========================================
-        # ENSURE UPLOAD FOLDER EXISTS
-        # ==========================================
-        os.makedirs(
-            app.config["UPLOAD_FOLDER"],
-            exist_ok=True
-        )
-
-        filepath = os.path.join(
-            app.config["UPLOAD_FOLDER"],
-            unique_name
-        )
-
-        print("Saving image to:", filepath)
-
-        # SAVE IMAGE
-        file.save(filepath)
-
-        # ==========================================
-        # PREDICT IMAGE
-        # ==========================================
-        result, confidence = predict_image(filepath)
-
-        # ==========================================
-        # SAVE TO DATABASE
-        # ==========================================
-        save_prediction(
-            image=unique_name,
-            result=result,
-            confidence=confidence,
-            user_id=session.get("user_id")
-        )
+        print("FULL PREDICT ERROR:", str(e))
 
         return render_template(
             "predict.html",
-            prediction=result,
-            image=unique_name
+            prediction=f"Server Error: {str(e)}"
         )
-
-    return render_template(
-        "predict.html",
-        prediction="Invalid file"
-    )
-
 # ==========================================
 # ADMIN DASHBOARD
 # ==========================================
@@ -565,5 +611,6 @@ def logout():
 if __name__ == "__main__":
     app.run(
         host="0.0.0.0",
-        port=5000
+        port=5000,
+        debug=True
     )
