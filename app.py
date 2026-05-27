@@ -111,14 +111,16 @@ def predict_image(image_path):
     if model is None:
         model = load_model_once()
 
+   # Run the prediction
     prediction = model.predict(img, verbose=0)[0][0]
 
     if prediction >= 0.5:
         confidence = round(float(prediction) * 100, 2)
-        result = f"Parasitized (Malaria Detected)"
+        result = "Parasitized (Malaria Detected)"
     else:
-        confidence = round(float((1 - prediction) * 100, 2))
-        result = f"Uninfected (Healthy)"
+        # ✅ FIXED: The parentheses are now correctly grouped!
+        confidence = round(float(1 - prediction) * 100, 2)
+        result = "Uninfected (Healthy)"
 
     return result, confidence
 
